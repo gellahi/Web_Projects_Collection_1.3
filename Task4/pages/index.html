@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobPortal - Find Your Dream Job</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-emerald-600 to-green-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-2xl font-bold flex items-center">
+                    <i class="fas fa-briefcase mr-3"></i>JobPortal
+                </h1>
+                <div class="hidden md:flex space-x-4">
+                    <a href="#" onclick="showJobListings()" class="hover:text-emerald-200 transition">Jobs</a>
+                    <a href="#" onclick="toggleAdminView()" class="hover:text-emerald-200 transition">Admin</a>
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="seedJobs()"
+                    class="bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 text-gray-800 transition flex items-center">
+                    <i class="fas fa-seed mr-2"></i>Seed Jobs
+                </button>
+                <button onclick="toggleAdminView()"
+                    class="bg-emerald-500 px-4 py-2 rounded-lg hover:bg-emerald-600 transition flex items-center md:hidden">
+                    <i class="fas fa-cog mr-2"></i>Admin
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        <!-- Job Listings Section -->
+        <section id="jobListingsSection">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Available Jobs</h2>
+                <div class="flex space-x-3">
+                    <select id="jobFilterType"
+                        class="p-2 rounded-md border-gray-300 shadow-sm focus:border-emerald-500">
+                        <option value="">All Job Types</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                    </select>
+                    <div class="relative">
+                        <input type="text" id="jobSearchInput" placeholder="Search jobs..."
+                            class="p-2 pl-9 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 w-48">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            <div id="resultsCount" class="text-sm text-gray-600 mb-4 hidden"></div>
+            <div id="jobListings" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Jobs will be populated here -->
+            </div>
+        </section>
+
+        <!-- Admin View Section -->
+        <section id="adminView" class="hidden">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 flex items-center">
+                    <i class="fas fa-dashboard mr-3 text-emerald-600"></i>Admin Dashboard
+                </h2>
+
+                <!-- Job Creation Form -->
+                <div class="bg-gray-50 p-8 rounded-lg mb-8 shadow-sm">
+                    <h3 class="text-xl font-semibold mb-6 text-gray-700">Create New Job Listing</h3>
+                    <form id="jobForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="col-span-full">
+                                <label for="jobTitle" class="block text-sm font-medium text-gray-700 mb-1">Job
+                                    Title</label>
+                                <input type="text" id="jobTitle" placeholder="Enter job title" required
+                                    class="p-3 col-span-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                            </div>
+                            <div>
+                                <label for="jobCompany" class="block text-sm font-medium text-gray-700 mb-1">Company
+                                    Name</label>
+                                <input type="text" id="jobCompany" placeholder="Enter company name" required
+                                    class="p-3 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                            </div>
+                            <div>
+                                <label for="jobLocation"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                <input type="text" id="jobLocation" placeholder="City, Country" required
+                                    class="p-3 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                            </div>
+                            <div>
+                                <label for="jobType" class="block text-sm font-medium text-gray-700 mb-1">Job
+                                    Type</label>
+                                <select id="jobType" required
+                                    class="p-3 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                                    <option value="">Select Job Type</option>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Internship">Internship</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="jobSalary" class="block text-sm font-medium text-gray-700 mb-1">Salary
+                                    Range</label>
+                                <input type="text" id="jobSalary" placeholder="e.g. PKR 100,000 - 150,000"
+                                    class="p-3 rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                            </div>
+                            <div class="col-span-full">
+                                <label for="jobDescription" class="block text-sm font-medium text-gray-700 mb-1">Job
+                                    Description</label>
+                                <textarea id="jobDescription"
+                                    placeholder="Describe the role, responsibilities, and benefits" required rows="4"
+                                    class="p-3 col-span-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"></textarea>
+                            </div>
+                            <div class="col-span-full">
+                                <label for="jobRequirements"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Requirements (comma
+                                    separated)</label>
+                                <input type="text" id="jobRequirements"
+                                    placeholder="e.g. 3+ years experience, React, Node.js"
+                                    class="p-3 col-span-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                            </div>
+                        </div>
+                        <div class="flex justify-end pt-4">
+                            <button type="submit"
+                                class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition">
+                                <i class="fas fa-plus mr-2"></i>Create Job
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Applicants List -->
+                <div id="applicantsList" class="space-y-4">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-700">Applicants</h3>
+                    <!-- Applicants will be populated here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Application Modal -->
+    <div id="applicationModal"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center overflow-y-auto py-5">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 my-auto relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <div class="p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
+                <h2 class="text-xl sm:text-2xl font-bold mb-6 text-center">Apply for <span id="modalJobTitle"
+                        class="text-emerald-600"></span></h2>
+                <form id="applicationForm" class="space-y-4">
+                    <input type="hidden" id="jobId">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input type="text" id="name" placeholder="Enter your full name" required
+                                class="p-3 w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email
+                                Address</label>
+                            <input type="email" id="email" placeholder="Enter your email address" required
+                                class="p-3 w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label for="resumeLink"
+                                class="block text-sm font-medium text-gray-700 mb-1">Resume/Portfolio Link</label>
+                            <input type="url" id="resumeLink" placeholder="Link to your resume or portfolio" required
+                                class="p-3 w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
+                            <p class="text-xs text-gray-500 mt-1">Please provide a link to your resume hosted on Google
+                                Drive, Dropbox, or your personal website</p>
+                        </div>
+                        <div>
+                            <label for="coverLetter" class="block text-sm font-medium text-gray-700 mb-1">Cover Letter
+                                (Optional)</label>
+                            <textarea id="coverLetter" placeholder="Why are you interested in this role?" rows="3"
+                                class="p-3 w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex justify-between space-x-3 pt-4">
+                        <button type="button" onclick="closeModal()"
+                            class="w-full bg-gray-200 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-300 transition flex items-center justify-center">
+                            <i class="fas fa-times mr-2"></i>Cancel
+                        </button>
+                        <button type="submit"
+                            class="w-full bg-emerald-600 text-white px-4 py-3 rounded-lg hover:bg-emerald-700 transition flex items-center justify-center">
+                            <i class="fas fa-paper-plane mr-2"></i>Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 py-6 mt-8">
+        <div class="container mx-auto px-4 text-center text-gray-600">
+            <p>&copy; 2024 JobPortal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="./main.js"></script>
+</body>
+
+</html>

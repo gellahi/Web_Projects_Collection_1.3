@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Feedback Portal</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  </head>
+  <body>
+    <div class="container">
+      <div class="feedback-section">
+        <div class="form-container">
+          <h1>Share Your Thoughts</h1>
+          <p class="subtitle">We value your feedback to improve our services</p>
+          
+          <form id="feedbackForm" class="feedback-form">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" required placeholder="Enter your name">
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" required placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" required placeholder="Your feedback matters to us"></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn">
+              Submit Feedback
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </form>
+        </div>
+
+        <div class="feedback-list">
+          <h2>Recent Feedback</h2>
+          <div id="feedbackEntries" class="entries-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const feedbackForm = document.getElementById('feedbackForm');
+      const feedbackEntries = document.getElementById('feedbackEntries');
+
+      // Load existing feedback
+      async function loadFeedback() {
+        try {
+          const response = await fetch('/api/feedback');
+          const feedbacks = await response.json();
+          
+          feedbackEntries.innerHTML = feedbacks.map(feedback => `
+            <div class="feedback-card">
+              <div class="feedback-header">
+                <h3>${feedback.name}</h3>
+                <span class="feedback-date">${new Date(feedback.createdAt).toLocaleDateString()}</span>
+              </div>
+              <p class="feedback-email">${feedback.email}</p>
+              <p class="feedback-message">${feedback.message}</p>
+            </div>
+          `).join('');
+        } catch (error) {
+          console.error('Error loading feedback:', error);
+        }
+      }
+
+      // Submit new feedback
+      feedbackForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = {
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          message: document.getElementById('message').value
+        };
+
+        try {
+          const response = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          });
+
+          if (response.ok) {
+            feedbackForm.reset();
+            loadFeedback();
+          }
+        } catch (error) {
+          console.error('Error submitting feedback:', error);
+        }
+      });
+
+      // Initial load
+      loadFeedback();
+    </script>
+  </body>
+</html>

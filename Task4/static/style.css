@@ -1,0 +1,143 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.6;
+}
+
+/* Input Styling */
+input,
+select,
+textarea {
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+    padding: 0.625rem 1rem;
+    width: 100%;
+    outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Job Card Hover Effect */
+.job-card {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    border-color: #e5e7eb;
+}
+
+/* Modal Open State */
+.modal-open {
+    overflow: hidden;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .job-card {
+        max-width: 100%;
+    }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.admin-form label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+    padding: 0.75rem 1rem;
+    transition: all 0.2s;
+}
+
+/* Add more space between form elements */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Ensure consistent job card heights */
+.job-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 280px;
+}
+
+.job-card .job-content {
+    flex-grow: 1;
+}
+
+/* Modal Scrollbar Styling */
+#applicationModal .max-h-\[90vh\] {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+}
+
+#applicationModal .max-h-\[90vh\]::-webkit-scrollbar {
+    width: 6px;
+}
+
+#applicationModal .max-h-\[90vh\]::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#applicationModal .max-h-\[90vh\]::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 3px;
+}
+
+/* Prevent body scrolling when modal is open */
+body.modal-open {
+    overflow: hidden;
+    padding-right: 6px;
+    /* Prevent layout shift when scrollbar disappears */
+}
+
+/* Improved modal positioning for different screen sizes */
+@media (max-height: 700px) {
+    #applicationModal .max-h-\[90vh\] {
+        max-height: 85vh;
+    }
+}
+
+@media (max-height: 500px) {
+    #applicationModal {
+        align-items: flex-start;
+    }
+
+    #applicationModal .max-h-\[90vh\] {
+        max-height: 80vh;
+    }
+}

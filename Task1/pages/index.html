@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Student Registration Portal</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gradient-to-br from-indigo-100 to-purple-100 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+      <div class="max-w-md mx-auto bg-white rounded-xl shadow-xl overflow-hidden">
+        <div class="px-8 py-6">
+          <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Student Registration</h1>
+            <p class="text-gray-600">Join our academic community</p>
+          </div>
+
+          <div id="alert" class="hidden mb-6 p-4 rounded-lg"></div>
+
+          <form id="registrationForm" class="space-y-6">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+              <input type="text" id="name" name="name" required
+                class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Enter your full name">
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+              <input type="email" id="email" name="email" required
+                class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="your.email@example.com">
+            </div>
+
+            <div>
+              <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+              <input type="password" id="password" name="password" required
+                class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="••••••••">
+            </div>
+
+            <div>
+              <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
+              <select id="department" name="department" required
+                class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="">Select Department</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Business">Business</option>
+                <option value="Arts">Arts</option>
+                <option value="Sciences">Sciences</option>
+              </select>
+            </div>
+
+            <button type="submit"
+              class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+              Register
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('registrationForm');
+        const alert = document.getElementById('alert');
+        const emailInput = document.getElementById('email');
+        let emailTimeout;
+
+        function showAlert(message, type) {
+          alert.textContent = message;
+          alert.className = `mb-6 p-4 rounded-lg ${
+            type === 'success' 
+              ? 'bg-green-100 text-green-700 border border-green-400' 
+              : 'bg-red-100 text-red-700 border border-red-400'
+          }`;
+          alert.classList.remove('hidden');
+
+          // Auto-hide alert after 5 seconds
+          setTimeout(() => {
+            alert.classList.add('hidden');
+          }, 5000);
+        }
+
+        emailInput.addEventListener('input', (e) => {
+          clearTimeout(emailTimeout);
+          emailTimeout = setTimeout(async () => {
+            const email = e.target.value;
+            if (email && email.includes('@')) {
+              try {
+                const response = await fetch(`/api/students/check-email/${encodeURIComponent(email)}`);
+                const data = await response.json();
+                if (data.exists) {
+                  showAlert('This email is already registered', 'error');
+                } else {
+                  alert.classList.add('hidden');
+                }
+              } catch (error) {
+                console.error('Error checking email:', error);
+              }
+            }
+          }, 500);
+        });
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const formData = {
+            name: form.name.value.trim(),
+            email: form.email.value.trim(),
+            password: form.password.value,
+            department: form.department.value
+          };
+
+          // Basic validation
+          if (!formData.name || !formData.email || !formData.password || !formData.department) {
+            showAlert('Please fill in all fields', 'error');
+            return;
+          }
+
+          try {
+            const response = await fetch('/api/students/register', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              showAlert('Registration successful! Welcome to our community.', 'success');
+              form.reset();
+            } else {
+              showAlert(data.error || 'Registration failed. Please try again.', 'error');
+            }
+          } catch (error) {
+            console.error('Registration error:', error);
+            showAlert('An error occurred. Please try again.', 'error');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
